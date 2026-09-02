@@ -1,0 +1,31 @@
+name: Pipeline CI/CD Biblioteca
+
+on:
+  push:
+    branches: [ main ][cite: 2]
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout do código
+      uses: actions/checkout@v4[cite: 2]
+
+    - name: Configurar Python
+      uses: actions/setup-python@v5[cite: 2]
+      with:
+        python-version: '3.10'[cite: 2]
+
+    - name: Etapa de Build
+      run: |
+        echo "Executando Build da aplicação..."
+        python -m compileall .
+
+    - name: Executar Testes
+      run: |
+        python -m unittest discover -s tests -v[cite: 2]
+
+    - name: Etapa de Deploy
+      run: |
+        echo "Deploy realizado com sucesso!"[cite: 2]
