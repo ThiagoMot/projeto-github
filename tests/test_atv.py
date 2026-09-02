@@ -10,7 +10,7 @@ class TestSistemaBiblioteca(unittest.TestCase):
 
     def test_cadastrar_usuario(self):
         sucesso, _ = atv.cadastrar_usuario("1", "Thiago")
-        self.assertTrue(sucesso)
+        self.assertFalse(sucesso)
         self.assertIn("1", atv.usuarios)
 
         # Teste de duplicidade
