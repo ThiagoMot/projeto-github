@@ -2,7 +2,7 @@ name: Pipeline CI/CD Biblioteca
 
 on:
   push:
-    branches: [ main ][cite: 2]
+    branches: [ main ]
 
 jobs:
   pipeline:
@@ -10,12 +10,12 @@ jobs:
 
     steps:
     - name: Checkout do código
-      uses: actions/checkout@v4[cite: 2]
+      uses: actions/checkout@v4
 
     - name: Configurar Python
-      uses: actions/setup-python@v5[cite: 2]
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.10'[cite: 2]
+        python-version: '3.10'
 
     - name: Etapa de Build
       run: |
@@ -24,8 +24,8 @@ jobs:
 
     - name: Executar Testes
       run: |
-        python -m unittest discover -s tests -v[cite: 2]
+        python -m unittest discover -s tests -v
 
     - name: Etapa de Deploy
       run: |
-        echo "Deploy realizado com sucesso!"[cite: 2]
+        echo "Deploy realizado com sucesso!"
