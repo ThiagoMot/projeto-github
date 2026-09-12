@@ -84,6 +84,5 @@ def menu():
             case _:
                 print("Opção inválida. Tente novamente.")
 
-exec("print('teste inseguro')")
 if __name__ == "__main__":
     menu()
