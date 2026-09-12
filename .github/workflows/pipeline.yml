@@ -1,31 +1,49 @@
-name: Pipeline CI/CD Biblioteca
+name: Pipeline CI/CD DevSecOps
 
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  pipeline:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout do código
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v3
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Validar Sintaxe
+        run: |
+          pip install -r requirements.txt
+          python -m compileall .
 
-    - name: Configurar Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
+  security:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Instalando dependencias de seguranca
+        run: pip install -r requirements.txt
+      - name: Executar Bandit (SAST)
+        run: bandit -r .
+      - name: Executar pip-audit (SCA)
+        run: pip-audit
 
-    - name: Etapa de Build
-      run: |
-        echo "Executando Build da aplicação..."
-        python -m compileall .
-
-    - name: Executar Testes
-      run: |
-        python -m unittest discover -s tests -v
-
-    - name: Etapa de Deploy
-      run: |
-        echo "Deploy realizado com sucesso!"
+  test:
+    needs: security
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Executar Testes Unitarios
+        run: python -m unittest discover -s tests -v
