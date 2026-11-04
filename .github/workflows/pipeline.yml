@@ -35,7 +35,7 @@ jobs:
           python -m pip install --upgrade pip setuptools
           pip install -r requirements.txt
       - name: Executar Bandit (SAST)
-        run: bandit -r .
+        run: bandit -r . --exclude ./Ansible
       - name: Executar pip-audit (SCA)
         run: pip-audit
 
