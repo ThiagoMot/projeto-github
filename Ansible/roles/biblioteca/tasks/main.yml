@@ -1,0 +1,58 @@
+---
+- name: Definir caminho da raiz do projeto
+  ansible.builtin.set_fact:
+    project_root: "{{ role_path }}/../../.."
+
+- name: Verificar se o Python 3 está instalado
+  ansible.builtin.command: python3 --version
+  register: python_version
+  changed_when: false
+
+- name: Exibir a versão do Python encontrada
+  ansible.builtin.debug:
+    msg: "{{ python_version.stdout }}"
+
+- name: Criar o diretório da aplicação
+  ansible.builtin.file:
+    path: "{{ app_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Copiar o arquivo Python da aplicação
+  ansible.builtin.copy:
+    src: "{{ project_root }}/atv.py"
+    dest: "{{ app_dir }}/atv.py"
+    mode: "0644"
+
+- name: Copiar o requirements.txt
+  ansible.builtin.copy:
+    src: "{{ project_root }}/requirements.txt"
+    dest: "{{ app_dir }}/requirements.txt"
+    mode: "0644"
+
+- name: Copiar a pasta tests
+  ansible.builtin.copy:
+    src: "{{ project_root }}/tests/"
+    dest: "{{ app_dir }}/tests/"
+    mode: preserve
+
+- name: Criar o ambiente virtual da aplicação
+  ansible.builtin.command: "python3 -m venv {{ venv_dir }}"
+  args:
+    creates: "{{ venv_dir }}/bin/python"
+
+- name: Instalar as dependências da aplicação
+  ansible.builtin.pip:
+    requirements: "{{ app_dir }}/requirements.txt"
+    virtualenv: "{{ venv_dir }}"
+
+- name: Executar os testes automatizados da aplicação
+  ansible.builtin.command: "{{ venv_dir }}/bin/python -m unittest discover -s tests -v"
+  args:
+    chdir: "{{ app_dir }}"
+  register: resultado_testes
+  changed_when: false
+
+- name: Exibir o resultado dos testes
+  ansible.builtin.debug:
+    msg: "{{ resultado_testes.stderr_lines + resultado_testes.stdout_lines }}"

@@ -1,0 +1,6 @@
+---
+- name: Preparar e testar o Sistema-Biblioteca
+  hosts: servidores
+  connection: local
+  roles:
+    - biblioteca
