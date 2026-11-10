@@ -2,8 +2,11 @@ FROM python:3.13
 
 WORKDIR /app
 
-COPY . .
-
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
+COPY atv.py monitoramento.py ./
+
+EXPOSE 8000
 
 CMD ["python", "atv.py"]

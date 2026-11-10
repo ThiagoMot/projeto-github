@@ -1,4 +1,18 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+.env
+*.db
+*.sqlite3
 .vscode/
-Ansible/.venv/
+.idea/
+*.swp
+*~
+*.log

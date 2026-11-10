@@ -1,20 +1,27 @@
 # Sistema de Biblioteca - atv.py
+import monitoramento
 
 usuarios = {}  # {id_usuario: nome}
 livros = {}    # {id_livro: {'titulo': titulo, 'disponivel': True/False}}
 
+
+@monitoramento.monitorar("cadastrar_usuario")
 def cadastrar_usuario(id_u, nome):
     if id_u in usuarios:
         return False, f"Erro: Utilizador com ID {id_u} já existe."
     usuarios[id_u] = nome
     return True, f"Utilizador '{nome}' (ID: {id_u}) cadastrado com sucesso!"
 
+
+@monitoramento.monitorar("cadastrar_livro")
 def cadastrar_livro(id_l, titulo):
     if id_l in livros:
         return False, f"Erro: Livro com ID {id_l} já existe."
     livros[id_l] = {'titulo': titulo, 'disponivel': True}
     return True, f"Livro '{titulo}' (ID: {id_l}) cadastrado com sucesso!"
 
+
+@monitoramento.monitorar("emprestar_livro")
 def emprestar_livro(id_l, id_u):
     if id_u not in usuarios:
         return False, "Erro: Utilizador não cadastrado."
@@ -26,6 +33,8 @@ def emprestar_livro(id_l, id_u):
     livros[id_l]['disponivel'] = False
     return True, f"Livro '{livros[id_l]['titulo']}' emprestado para '{usuarios[id_u]}'."
 
+
+@monitoramento.monitorar("devolver_livro")
 def devolver_livro(id_l):
     if id_l not in livros:
         return False, "Erro: Livro não cadastrado."
@@ -34,6 +43,7 @@ def devolver_livro(id_l):
 
     livros[id_l]['disponivel'] = True
     return True, f"Livro '{livros[id_l]['titulo']}' devolvido com sucesso!"
+
 
 def menu():
     while True:
@@ -86,5 +96,7 @@ def menu():
             case _:
                 print("Opção inválida. Tente novamente.")
 
+
 if __name__ == "__main__":
+    monitoramento.iniciar_monitoramento()
     menu()

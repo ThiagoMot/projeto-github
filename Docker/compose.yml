@@ -1,0 +1,41 @@
+services:
+  biblioteca:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    stdin_open: true
+    tty: true
+    ports:
+      - "8000:8000"
+    volumes:
+      - biblioteca-dados:/app/dados
+    networks:
+      - biblioteca-net
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/alert-rules.yml:/etc/prometheus/alert-rules.yml:ro
+    depends_on:
+      - biblioteca
+      - alertmanager
+    networks:
+      - biblioteca-net
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    networks:
+      - biblioteca-net
+
+volumes:
+  biblioteca-dados:
+
+networks:
+  biblioteca-net:

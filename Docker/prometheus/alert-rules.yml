@@ -1,0 +1,20 @@
+groups:
+  - name: biblioteca-alertas
+    rules:
+      - alert: BibliotecaForaDoAr
+        expr: up{job="biblioteca"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Sistema Biblioteca fora do ar"
+          description: "O Prometheus não consegue coletar métricas de {{ $labels.instance }}."
+
+      - alert: MuitasFalhasNasOperacoes
+        expr: sum(increase(biblioteca_operacoes_total{resultado="falha"}[5m])) > 5
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Muitas falhas nas operações da biblioteca"
+          description: "Mais de 5 operações falharam nos últimos 5 minutos."
